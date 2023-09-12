@@ -1,8 +1,8 @@
 <!--
  * @Author: CTC 2801320287@qq.com
  * @Date: 2023-09-06 15:54:42
- * @LastEditors: CTC 2801320287@qq.com
- * @LastEditTime: 2023-09-12 00:19:27
+ * @LastEditors: CTC_322 2130227@tongji.edu.cn
+ * @LastEditTime: 2023-09-12 21:50:04
  * @Description: Double pendulum dynamics derived with PoE
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -286,4 +286,70 @@ $$
 M_{11} = J_{1} + J_{2} + m_{1} l_{c1}^{2} + m_{2} (l_{1}^{2} + l_{c2}^{2}) + 2 m_{2} l_{1} l_{2} \cos{\theta_{2}}, \\
 M_{12} = M_{21} = J_{2} + m_{2} l_{c2}^{2} + m_{2} l_{1} l_{c2} \cos{\theta_{2}}, \qquad
 M_{22} = J_{2} + m_{2} l_{c2}^{2}.
+$$
+
+$V (\vec{q}, \dot{\vec{q}})$ follows
+
+$$
+V_{i} (\vec{q}, \dot{\vec{q}}) = \sum_{j = 1}^{n} \sum_{k = 1}^{n} \left(\frac{\partial M_{ij}}{\partial q_{k}} - \frac{1}{2} \sum_{j = 1}^{n} \sum_{k = 1}^{n} \frac{\partial M_{jk}}{\partial \dot{q}_{i}} \right) \dot{q}_{j} \dot{q}_{k}.
+$$
+
+In this double pendulum example, $V_{i} (\vec{q}, \dot{\vec{q}})$ is
+
+$$
+\begin{aligned}
+    V_{1} (\vec{\theta}, \dot{\vec{\theta}}) = V_{1} (\vec{q}, \dot{\vec{q}}) &= \sum_{j = 1}^{2} \sum_{k = 1}^{2} \left( \frac{\partial M_{1j}}{\partial q_{k}} - \frac{1}{2} \sum_{j = 1}^{2} \sum_{k = 1}^{2} \frac{\partial M_{jk}}{\partial \dot{q}_{1}} \right) \dot{q}_{j} \dot{q}_{k} \\
+    &= \sum_{j = 1}^{2} \sum_{k = 1}^{2} \left( \frac{\partial M_{1j}}{\partial q_{k}} \right) \dot{q}_{j} \dot{q}_{k} \\
+    &= \frac{\partial M_{11}}{\partial q_{1}} \dot{q}_{1} \dot{q}_{1} + \frac{\partial M_{11}}{\partial q_{2}} \dot{q}_{1} \dot{q}_{2} + \frac{\partial M_{12}}{\partial q_{1}} \dot{q}_{2} \dot{q}_{1} + \frac{\partial M_{12}}{\partial q_{2}} \dot{q}_{2} \dot{q}_{2} \\
+    &= - 2 m_{2} l_{1} l_{c2} \sin{\theta_{2}} \dot{\theta}_{1} \dot{\theta}_{2} - m_{2} l_{1} l_{c2} \sin{\theta_{2}} \dot{\theta}_{2}^{2},
+\end{aligned} \\
+\begin{aligned}
+    V_{2} (\vec{\theta}, \dot{\vec{\theta}}) = V_{2} (\vec{q}, \dot{\vec{q}}) &= \sum_{j = 1}^{2} \sum_{k = 1}^{2} \left( \frac{\partial M_{2j}}{\partial q_{k}} - \frac{1}{2} \sum_{j = 1}^{2} \sum_{k = 1}^{2} \frac{\partial M_{jk}}{\partial \dot{q}_{1}} \right) \dot{q}_{j} \dot{q}_{k} \\
+    &= \sum_{j = 1}^{2} \sum_{k = 1}^{2} \left( \frac{\partial M_{2j}}{\partial q_{k}} \right) \dot{q}_{j} \dot{q}_{k} \\
+    &= \frac{\partial M_{21}}{\partial q_{1}} \dot{q}_{1} \dot{q}_{1} + \frac{\partial M_{21}}{\partial q_{2}} \dot{q}_{1} \dot{q}_{2} + \frac{\partial M_{22}}{\partial q_{1}} \dot{q}_{2} \dot{q}_{1} + \frac{\partial M_{22}}{\partial q_{2}} \dot{q}_{2} \dot{q}_{2} \\
+    &= - m_{2} l_{1} l_{c2} \sin{\theta_{2}} \dot{\theta}_{1} \dot{\theta}_{2}.
+\end{aligned}
+$$
+
+Therefore, we obtain
+
+$$
+V (\vec{\theta}, \dot{\vec{\theta}}) = V (\vec{q}, \dot{\vec{q}}) = \begin{pmatrix}
+    - 2 m_{2} l_{1} l_{c2} \sin{\theta_{2}} \dot{\theta}_{1} \dot{\theta}_{2} - m_{2} l_{1} l_{c2} \sin{\theta_{2}} \dot{\theta}_{2}^{2} \\
+    - m_{2} l_{1} l_{c2} \sin{\theta_{2}} \dot{\theta}_{1} \dot{\theta}_{2}
+\end{pmatrix}, \\
+B (\vec{\theta}, \dot{\vec{\theta}}) = B (\vec{q}, \dot{\vec{q}}) = \begin{pmatrix}
+    - 2 m_{2} l_{1} l_{c2} \sin{\theta_{2}} \\
+    - m_{2} l_{1} l_{c2} \sin{\theta_{2}}
+\end{pmatrix}, \qquad
+C (\vec{\theta}, \dot{\vec{\theta}}) = C (\vec{q}, \dot{\vec{q}}) = \begin{pmatrix}
+    - m_{2} l_{1} l_{c2} \sin{\theta_{2}} \\ 0
+\end{pmatrix}.
+$$
+
+$G (\vec{q})$ follows
+
+$$
+G_{i} (\vec{q}) = - \sum_{j = 1}^{n} J_{j_{i}}^{\top} \begin{pmatrix}
+    m_{j} \vec{g} \times \vec{r}_{C_{j}} \\ m_{j} \vec{g}
+\end{pmatrix}.
+$$
+
+Where $G_{i} (\vec{q})$ is the $i$-th element of column-vector-shaped $G (\vec{q})$, $J_{j_{i}}$ is the $i$-th column of Jacobian matrix $J_{j}$.
+
+In this example, gravity term is derived as follows
+
+$$
+\begin{aligned}
+    G_{1} (\vec{\theta}) = G_{1} (\vec{q})
+    &= - \sum_{j = 1}^{n} J_{m_{j_{1}}}^{\top} \begin{pmatrix}
+        m_{j} \vec{g} \times \vec{r}_{C_{j}} \\ m_{j} \vec{g}
+    \end{pmatrix} \\
+    &= - J_{m_{1_{1}}}^{\top} \begin{pmatrix}
+        m_{1} \vec{g} \times \vec{r}_{C_{1}} \\ m_{1} \vec{g}
+    \end{pmatrix} - J_{m_{2_{1}}}^{\top} \begin{pmatrix}
+        m_{2} \vec{g} \times \vec{r}_{C_{2}} \\ m_{2} \vec{g}
+    \end{pmatrix} \\
+    &= 
+\end{aligned}
 $$
